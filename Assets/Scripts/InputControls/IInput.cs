@@ -5,5 +5,6 @@ namespace InputControls
     public interface IInput
     { 
         Vector2 MouseRealWorldPos { get; }
+        bool isShooting  { get; }
     }
 }

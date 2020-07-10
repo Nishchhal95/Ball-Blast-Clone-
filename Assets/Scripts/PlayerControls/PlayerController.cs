@@ -16,9 +16,19 @@ namespace PlayerControls
 
         [SerializeField] private IInput gameInput;
 
+        [SerializeField] private GameObject bulletPrefab;
+        [SerializeField] private Transform bulletSpawnPoint;
+        [SerializeField] private float bulletSpeed = 20f;
+        [SerializeField] private float MAX_GAP_BETWEEN_SHOTS = .2f;
+        [SerializeField] private float currentTimeLeftForNextShot = 0f;
+
+        [SerializeField] private Animator m_Animator;
+
         // Start is called before the first frame update
         private void Start()
         {
+            m_Animator = GetComponent<Animator>();
+            currentTimeLeftForNextShot = MAX_GAP_BETWEEN_SHOTS;
             _transform = transform;
             gameInput = GetComponent<IInput>();
 
@@ -32,6 +42,7 @@ namespace PlayerControls
         private void Update()
         {
             MovePlayer();
+            CheckAndExecuteShoot();
         }
 
         private void MovePlayer()
@@ -55,6 +66,31 @@ namespace PlayerControls
             var finalXPos = Mathf.Clamp(finalPlayerPos.x, -maxApproachableLimitX,
                 maxApproachableLimitX);
             _transform.position = new Vector3(finalXPos, transform.position.y);
+            
         }
+        
+        private void CheckAndExecuteShoot()
+        {
+            currentTimeLeftForNextShot -= Time.deltaTime;
+            if (gameInput.isShooting && currentTimeLeftForNextShot <= 0)
+            {
+                Shoot();
+            }
+        }
+
+        private void Shoot()
+        {
+            currentTimeLeftForNextShot = MAX_GAP_BETWEEN_SHOTS;
+            m_Animator.SetTrigger("Shoot");
+            //Spawn a bullet and Shoot
+            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, Quaternion.identity);
+            Rigidbody2D bulletRb = bullet.AddComponent<Rigidbody2D>();
+            bulletRb.isKinematic = false;
+            bulletRb.gravityScale = 0;
+            bulletRb.velocity = Vector2.up * bulletSpeed;
+            
+            Destroy(bullet, 2f);
+        }
+        
     }
 }

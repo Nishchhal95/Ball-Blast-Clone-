@@ -6,6 +6,7 @@ namespace InputControls
     {
         [SerializeField] private Camera mainCamera;
         public Vector2 MouseRealWorldPos { get; private set; }
+        public bool isShooting { get; private set; }
 
         // Start is called before the first frame update
         private void Start()
@@ -21,9 +22,15 @@ namespace InputControls
     
         private void PlayerInputControls()
         {
+            isShooting = false;
             //Mouse Position
             Vector2 mousePosition = Input.mousePosition;
             MouseRealWorldPos = mainCamera.ScreenToWorldPoint(mousePosition);
+
+            if (Input.GetMouseButton(0))
+            {
+                isShooting = true;
+            }
         }
     }
 }

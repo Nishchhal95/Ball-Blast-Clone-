@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 2313733783
+    locked: 0
+  - name: Canon
+    uniqueID: 3252656277
+    locked: 0
